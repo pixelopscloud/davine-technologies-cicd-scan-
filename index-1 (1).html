@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Muhammad Ali — DevOps Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:#060a12;
+  color:#dde8f0;
+  font-family:'Space Mono',monospace;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── BACKGROUND ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(0,212,255,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,212,255,.03) 1px,transparent 1px);
+  background-size:50px 50px;
+  animation:gridMove 25s linear infinite;
+  pointer-events:none;z-index:0;
+}
+@keyframes gridMove{to{background-position:50px 50px}}
+
+.orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
+.orb1{width:380px;height:380px;background:rgba(0,50,255,.1);top:-80px;left:-80px;animation:opulse 8s ease-in-out infinite}
+.orb2{width:280px;height:280px;background:rgba(0,212,255,.07);bottom:10%;right:-50px;animation:opulse 8s ease-in-out 4s infinite}
+@keyframes opulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.2)}}
+
+#pts{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.pt{position:absolute;border-radius:50%;background:#00d4ff;opacity:0;animation:ptfly linear infinite}
+@keyframes ptfly{0%{transform:translateY(100vh);opacity:0}10%{opacity:.35}90%{opacity:.1}100%{transform:translateY(-60px);opacity:0}}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:300;
+  height:52px;padding:0 20px;
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(6,10,18,.95);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid #162030;
+  animation:navslide .5s ease both;
+}
+@keyframes navslide{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.logo{font-size:11px;color:#00d4ff;letter-spacing:3px;cursor:pointer;flex-shrink:0}
+.logo-c{animation:blink 1s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* hamburger button */
+.hamburger{
+  display:flex;flex-direction:column;justify-content:center;gap:5px;
+  cursor:pointer;padding:6px;background:none;border:none;z-index:310;
+}
+.hamburger span{
+  display:block;width:22px;height:2px;
+  background:#6a8aaa;border-radius:2px;
+  transition:all .3s ease;
+}
+.hamburger:hover span{background:#00d4ff}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);background:#00d4ff}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);background:#00d4ff}
+
+/* dropdown menu */
+.navdrop{
+  position:fixed;top:52px;left:0;right:0;z-index:299;
+  background:rgba(6,10,18,.98);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid #162030;
+  display:flex;flex-direction:column;
+  padding:0;
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .4s ease, padding .3s ease;
+}
+.navdrop.open{
+  max-height:400px;
+  padding:8px 0 16px;
+}
+.navdrop a{
+  color:#6a8aaa;text-decoration:none;
+  font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  padding:14px 24px;
+  transition:all .2s;
+  border-left:2px solid transparent;
+  display:block;
+}
+.navdrop a:hover,.navdrop a.active{
+  color:#00d4ff;
+  border-left-color:#00d4ff;
+  background:rgba(0,212,255,.04);
+  padding-left:32px;
+}
+
+/* ── PAGE SYSTEM ── */
+.page{
+  display:none;
+  opacity:0;
+  position:relative;
+  z-index:1;
+  transition:opacity .45s ease;
+  min-height:100vh;
+}
+.page.active{
+  display:block;
+}
+.page.visible{
+  opacity:1;
+}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  display:flex;align-items:center;
+  padding:70px 32px 50px;
+  position:relative;z-index:1;
+  overflow:hidden;
+}
+.hero-inner{
+  width:100%;max-width:1000px;margin:0 auto;
+  display:grid;
+  grid-template-columns:1fr 230px;
+  gap:20px;
+  align-items:center;
+}
+
+.htag{
+  font-size:12px;color:#00d4ff;letter-spacing:3px;text-transform:uppercase;
+  margin-bottom:16px;display:flex;align-items:center;gap:9px;
+  animation:fadeup .6s ease .2s both;
+}
+.htag::before{content:'';width:20px;height:1px;background:#00d4ff;flex-shrink:0}
+
+.hname{
+  font-family:'Syne',sans-serif;font-weight:800;
+  line-height:.93;letter-spacing:-1.5px;
+  margin-bottom:18px;
+  animation:fadeup .6s ease .35s both;
+}
+.hname .n1{display:block;color:#fff;font-size:clamp(36px,5.5vw,68px)}
+.hname .n2{
+  display:block;font-size:clamp(36px,5.5vw,68px);
+  background:linear-gradient(120deg,#00d4ff,#0055ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+.hsub{font-size:13px;color:#6a8aaa;line-height:1.7;margin-bottom:14px;animation:fadeup .6s ease .48s both}
+.hsub b{color:#00ff88}
+.htype{font-size:13px;color:#00d4ff;margin-bottom:26px;min-height:18px;animation:fadeup .6s ease .56s both}
+.hcur{color:#00ff88;animation:blink .8s step-end infinite}
+
+.hpills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:26px;animation:fadeup .6s ease .64s both}
+.hp{padding:5px 11px;border:1px solid #1e3248;border-radius:3px;font-size:10px;color:#6a8aaa;transition:all .2s;cursor:default}
+.hp:hover{border-color:#00d4ff;color:#00d4ff}
+
+.hbtns{display:flex;gap:9px;flex-wrap:wrap;animation:fadeup .6s ease .72s both}
+.btn{padding:10px 20px;border-radius:5px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1px;text-decoration:none;transition:all .25s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.btnp{background:linear-gradient(135deg,#00d4ff,#0055ff);color:#fff;font-weight:700}
+.btnp:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,212,255,.3)}
+.btns{border:1px solid #162030;color:#dde8f0}
+.btns:hover{border-color:#00d4ff;color:#00d4ff;transform:translateY(-2px)}
+
+@keyframes fadeup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── INFINITY SVG ── */
+.infwrap{display:flex;justify-content:center;align-items:center;animation:fadeup .6s ease .4s both}
+.insvg{width:220px;height:220px;display:block;overflow:visible}
+
+@keyframes spinr{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes cpulse{0%,100%{opacity:.12}50%{opacity:.4}}
+@keyframes ndot{0%,100%{opacity:.2}50%{opacity:1}}
+
+/* ── DIVIDER ── */
+.div{height:1px;background:linear-gradient(90deg,transparent,#162030 25%,#162030 75%,transparent);position:relative;z-index:1}
+
+/* ── MARQUEE ── */
+.mqsec{padding:48px 0;border-top:1px solid #162030;border-bottom:1px solid #162030;overflow:hidden;position:relative;z-index:1}
+.mqlbl{text-align:center;font-size:10px;color:#00d4ff;letter-spacing:5px;text-transform:uppercase;margin-bottom:24px}
+.mqout{overflow:hidden;position:relative}
+.mqout::before,.mqout::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2}
+.mqout::before{left:0;background:linear-gradient(90deg,#060a12,transparent)}
+.mqout::after{right:0;background:linear-gradient(-90deg,#060a12,transparent)}
+.mqtrack{display:flex;gap:12px;animation:mqrun 32s linear infinite;width:max-content}
+.mqtrack:hover{animation-play-state:paused}
+@keyframes mqrun{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.tl{display:flex;flex-direction:column;align-items:center;gap:6px;padding:11px 14px;background:#0d1520;border:1px solid #162030;border-radius:7px;min-width:76px;flex-shrink:0;transition:all .25s;cursor:default}
+.tl:hover{border-color:#00d4ff;transform:translateY(-3px)}
+.tl svg{width:30px;height:30px}
+.tl span{font-size:8px;color:#6a8aaa;letter-spacing:1px}
+
+/* ── SECTIONS ── */
+.sec{padding:80px 32px;max-width:980px;margin:0 auto;position:relative;z-index:1;width:100%}
+.snum{font-size:10px;color:#00d4ff;letter-spacing:4px;text-transform:uppercase;margin-bottom:8px}
+.stitle{font-family:'Syne',sans-serif;font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:-1px;color:#fff;margin-bottom:38px}
+
+/* ── ABOUT ── */
+.aboutp{font-size:15px;line-height:2;color:#8ab0c8;max-width:660px}
+.aboutp b{color:#00d4ff}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:38px}
+.stat{padding:18px;background:#0d1520;border:1px solid #162030;border-radius:7px;transition:border-color .25s}
+.stat:hover{border-color:rgba(0,212,255,.3)}
+.statn{font-family:'Syne',sans-serif;font-size:clamp(24px,3.5vw,40px);font-weight:800;color:#00d4ff;line-height:1}
+.statl{font-size:9px;color:#6a8aaa;letter-spacing:2px;text-transform:uppercase;margin-top:5px}
+
+/* ── PIPELINE ── */
+.pipeline{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:34px;align-items:center}
+.pstep{display:flex;align-items:center;gap:6px}
+.pbox{background:#0d1520;border:1px solid #162030;border-radius:6px;padding:8px 10px;text-align:center;font-size:8px;color:#7a9ab8;transition:all .4s;min-width:50px}
+.pbox .pi{font-size:14px;display:block;margin-bottom:3px}
+.parr{font-size:11px;color:#162030;animation:aparr 2s ease-in-out infinite}
+@keyframes aparr{0%,100%{color:#162030}50%{color:#00d4ff}}
+
+/* ── SKILLS ── */
+.skgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:11px}
+.sk{background:#0d1520;border:1px solid #162030;border-radius:7px;padding:18px;transition:all .3s;position:relative;overflow:hidden}
+.sk::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#00d4ff,#0055ff);transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.sk:hover::before{transform:scaleX(1)}
+.sk:hover{border-color:rgba(0,212,255,.25);transform:translateY(-4px)}
+.skhd{display:flex;align-items:center;gap:8px;margin-bottom:11px}
+.skico{font-size:18px}
+.sktitle{font-size:13px;font-weight:700;color:#fff}
+.sktags{display:flex;flex-wrap:wrap;gap:4px}
+.sktag{font-size:9px;padding:3px 8px;background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.13);border-radius:3px;color:#00d4ff}
+
+/* ── EXP ── */
+.expcard{background:#0d1520;border:1px solid #162030;border-left:3px solid #00d4ff;border-radius:7px;padding:26px;transition:transform .3s}
+.expcard:hover{transform:translateX(4px)}
+.expbadge{display:inline-block;font-size:8px;padding:3px 9px;background:rgba(0,255,136,.07);border:1px solid rgba(0,255,136,.18);border-radius:20px;color:#00ff88;margin-bottom:13px;letter-spacing:2px}
+.exprole{font-family:'Syne',sans-serif;font-size:clamp(17px,2.5vw,22px);font-weight:800;color:#fff;margin-bottom:4px}
+.expco{font-size:11px;color:#0055ff;margin-bottom:3px}
+.expdt{font-size:9px;color:#3a5570;margin-bottom:16px}
+.exppts{list-style:none;display:flex;flex-direction:column;gap:7px}
+.exppts li{font-size:13px;color:#7a9ab8;padding-left:16px;position:relative;line-height:1.7}
+.exppts li::before{content:'›';position:absolute;left:0;color:#00d4ff;font-size:15px;line-height:1.2}
+
+/* ── PROJECTS ── */
+.pjgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:11px}
+.pj{background:#0d1520;border:1px solid #162030;border-radius:7px;padding:18px;transition:all .3s;display:flex;flex-direction:column;gap:7px}
+.pj:hover{border-color:rgba(0,212,255,.28);transform:translateY(-4px);box-shadow:0 14px 36px rgba(0,0,0,.4)}
+.pjnum{font-size:8px;color:#6a8aaa;letter-spacing:3px}
+.pjtitle{font-size:13px;font-weight:700;color:#fff;line-height:1.3}
+.pjdesc{font-size:11px;color:#6a8aaa;line-height:1.7;flex:1}
+.pjtech{display:flex;flex-wrap:wrap;gap:4px;padding-top:3px}
+.tb{font-size:8px;padding:3px 7px;background:rgba(0,85,255,.07);border:1px solid rgba(0,85,255,.15);border-radius:3px;color:#4477ee}
+.pjlink{font-size:9px;color:#00d4ff;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:gap .2s}
+.pjlink:hover{gap:8px}
+
+/* ── CERTS ── */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.cc{background:#0d1520;border:1px solid #162030;border-radius:10px;padding:22px;transition:all .3s;position:relative;overflow:hidden}
+.cc-glow{border-color:rgba(0,212,255,.25);background:linear-gradient(135deg,#0d1520 60%,rgba(0,212,255,.05))}
+.cc-glow::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#00d4ff,#0055ff,#00ff88);opacity:.8}
+.cc::after{content:'✓';position:absolute;top:14px;right:14px;width:22px;height:22px;background:rgba(0,255,136,.12);border:1px solid rgba(0,255,136,.4);border-radius:50%;font-size:10px;color:#00ff88;line-height:22px;text-align:center;font-weight:700}
+.cc:hover{border-color:#00d4ff;transform:translateY(-5px);box-shadow:0 14px 36px rgba(0,212,255,.13)}
+.cc-icon{font-size:28px;margin-bottom:12px}
+.ccname{font-size:15px;font-weight:700;color:#fff;margin-bottom:6px;padding-right:28px}
+.ccorg{font-size:10px;color:#00ff88;letter-spacing:1px;margin-bottom:4px}
+.ccdur{font-size:9px;color:#6a8aaa;margin-top:3px}
+
+/* ── CONTACT ── */
+.cngrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:11px}
+.cni{background:#0d1520;border:1px solid #162030;border-radius:7px;padding:16px;text-decoration:none;transition:all .3s;display:flex;flex-direction:column;gap:5px}
+.cni:hover{border-color:#00d4ff;transform:translateY(-3px)}
+.cnico{font-size:18px}
+.cnlbl{font-size:8px;color:#6a8aaa;letter-spacing:2px;text-transform:uppercase}
+.cnval{font-size:11px;color:#fff;word-break:break-all;line-height:1.4}
+
+footer{border-top:1px solid #162030;padding:20px 32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:9px;color:#3a5570;position:relative;z-index:1}
+
+/* ── RESPONSIVE ── */
+@media(max-width:780px){
+  .hero-inner{grid-template-columns:1fr}
+  .infwrap{margin-top:24px}
+}
+@media(max-width:560px){
+  .hname .n1,.hname .n2{font-size:36px}
+  nav{padding:0 14px}
+  .navul{gap:12px}
+  .navul a{font-size:8px}
+  .sec{padding:52px 16px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .skgrid{grid-template-columns:1fr}
+  .pjgrid{grid-template-columns:1fr}
+  .cgrid{grid-template-columns:1fr 1fr}
+  .cngrid{grid-template-columns:1fr}
+  .hero{padding:64px 16px 36px}
+  .insvg{width:190px;height:190px}
+}
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div id="pts"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" onclick="showPage('home')">MA_DEVOPS<span class="logo-c">_</span></div>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- DROPDOWN -->
+<div class="navdrop" id="navdrop">
+  <a href="#" onclick="showPage('about');closeMenu();return false;" id="nav-about">About</a>
+  <a href="#" onclick="showPage('skills');closeMenu();return false;" id="nav-skills">Skills</a>
+  <a href="#" onclick="showPage('certs');closeMenu();return false;" id="nav-certs">Certification</a>
+  <a href="#" onclick="showPage('projects');closeMenu();return false;" id="nav-projects">Projects</a>
+  <a href="#" onclick="showPage('exp');closeMenu();return false;" id="nav-exp">Experience</a>
+  <a href="#" onclick="showPage('contact');closeMenu();return false;" id="nav-contact">Contact</a>
+</div>
+
+<!-- ═══════════════ PAGE: HOME ═══════════════ -->
+<div class="page active" id="page-home">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+
+      <!-- Left: Text -->
+      <div>
+        <div class="htag">DevOps Engineer · Lahore, Pakistan</div>
+        <h1 class="hname">
+          <span class="n1">Muhammad</span>
+          <span class="n2">Ali</span>
+        </h1>
+        <p class="hsub">Building scalable infrastructure · <b>Automating everything</b></p>
+        <div class="htype"><span id="typed"></span><span class="hcur">|</span></div>
+        <div class="hpills">
+          <span class="hp">☁️ AWS</span>
+          <span class="hp">🐳 Docker</span>
+          <span class="hp">⚙️ Kubernetes</span>
+          <span class="hp">🏗️ Terraform</span>
+          <span class="hp">🔧 Jenkins</span>
+          <span class="hp">📊 Prometheus</span>
+          <span class="hp">🔴 Ansible</span>
+          <span class="hp">∞ ArgoCD</span>
+        </div>
+        <div class="hbtns">
+          <a href="mailto:muhammadali726200@gmail.com" class="btn btnp">✉ Email Me</a>
+          <a href="https://linkedin.com/in/muhammad-ali-425a83325" class="btn btns" target="_blank">LinkedIn ↗</a>
+          <a href="https://github.com/pixelopscloud" class="btn btns" target="_blank">GitHub ↗</a>
+        </div>
+      </div>
+
+      <!-- Right: Infinity -->
+      <div class="infwrap">
+        <svg class="insvg" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="gl">
+              <feGaussianBlur stdDeviation="2.5" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <path id="ip"
+              d="M130,130 C130,96 91,71 61,81 C26,93 21,131 61,149 C96,165 130,141 130,130
+                 C130,119 164,95 199,111 C239,129 234,167 199,179 C169,189 130,164 130,130 Z"
+              fill="none"/>
+            <linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#00d4ff"/>
+              <stop offset="50%" style="stop-color:#0055ff"/>
+              <stop offset="100%" style="stop-color:#00ff88"/>
+            </linearGradient>
+          </defs>
+
+          <circle cx="130" cy="130" r="116" fill="none" stroke="rgba(0,212,255,.05)" stroke-width="1"/>
+          <circle cx="130" cy="130" r="116" fill="none" stroke="rgba(0,212,255,.1)" stroke-width="1"
+            stroke-dasharray="5 9"
+            style="animation:spinr 22s linear infinite;transform-origin:130px 130px"/>
+          <circle cx="130" cy="130" r="88" fill="none" stroke="rgba(0,85,255,.07)" stroke-width="1"
+            stroke-dasharray="3 13"
+            style="animation:spinr 15s linear infinite reverse;transform-origin:130px 130px"/>
+
+          <path d="M130,130 C130,96 91,71 61,81 C26,93 21,131 61,149 C96,165 130,141 130,130
+                   C130,119 164,95 199,111 C239,129 234,167 199,179 C169,189 130,164 130,130 Z"
+            fill="none" stroke="rgba(0,212,255,.12)" stroke-width="7" stroke-linecap="round"/>
+          <path d="M130,130 C130,96 91,71 61,81 C26,93 21,131 61,149 C96,165 130,141 130,130
+                   C130,119 164,95 199,111 C239,129 234,167 199,179 C169,189 130,164 130,130 Z"
+            fill="none" stroke="url(#lg)" stroke-width="2.5" stroke-linecap="round" filter="url(#gl)"/>
+
+          <circle r="5" fill="#00d4ff" filter="url(#gl)">
+            <animateMotion dur="4s" repeatCount="indefinite"><mpath href="#ip"/></animateMotion>
+          </circle>
+          <circle r="3.5" fill="#00ff88" filter="url(#gl)">
+            <animateMotion dur="4s" begin="-2s" repeatCount="indefinite"><mpath href="#ip"/></animateMotion>
+          </circle>
+          <circle r="2.5" fill="#0055ff" filter="url(#gl)">
+            <animateMotion dur="3s" begin="-1s" repeatCount="indefinite"><mpath href="#ip"/></animateMotion>
+          </circle>
+
+          <circle cx="130" cy="130" r="7" fill="rgba(0,212,255,.1)" style="animation:cpulse 2s ease-in-out infinite"/>
+          <circle cx="130" cy="130" r="3" fill="#00d4ff" filter="url(#gl)"/>
+
+          <text x="51" y="68" text-anchor="middle" font-family="Space Mono" font-size="7.5" fill="rgba(0,212,255,.7)">PLAN</text>
+          <text x="22" y="132" text-anchor="middle" font-family="Space Mono" font-size="7.5" fill="rgba(0,212,255,.7)">CODE</text>
+          <text x="51" y="188" text-anchor="middle" font-family="Space Mono" font-size="7.5" fill="rgba(0,212,255,.7)">BUILD</text>
+          <text x="209" y="68" text-anchor="middle" font-family="Space Mono" font-size="7.5" fill="rgba(0,255,136,.7)">TEST</text>
+          <text x="237" y="132" text-anchor="middle" font-family="Space Mono" font-size="7.5" fill="rgba(0,255,136,.7)">RELEASE</text>
+          <text x="209" y="188" text-anchor="middle" font-family="Space Mono" font-size="7.5" fill="rgba(0,255,136,.7)">DEPLOY</text>
+          <text x="130" y="220" text-anchor="middle" font-family="Space Mono" font-size="7.5" fill="rgba(0,85,255,.8)">MONITOR</text>
+          <text x="130" y="40" text-anchor="middle" font-family="Space Mono" font-size="7.5" fill="rgba(0,85,255,.8)">OPERATE</text>
+
+          <circle cx="51" cy="76" r="2.5" fill="rgba(0,212,255,.6)" style="animation:ndot 2s ease-in-out infinite"/>
+          <circle cx="24" cy="132" r="2.5" fill="rgba(0,212,255,.6)" style="animation:ndot 2s ease-in-out .3s infinite"/>
+          <circle cx="51" cy="180" r="2.5" fill="rgba(0,212,255,.6)" style="animation:ndot 2s ease-in-out .6s infinite"/>
+          <circle cx="209" cy="76" r="2.5" fill="rgba(0,255,136,.6)" style="animation:ndot 2s ease-in-out .9s infinite"/>
+          <circle cx="235" cy="132" r="2.5" fill="rgba(0,255,136,.6)" style="animation:ndot 2s ease-in-out 1.2s infinite"/>
+          <circle cx="209" cy="180" r="2.5" fill="rgba(0,255,136,.6)" style="animation:ndot 2s ease-in-out 1.5s infinite"/>
+
+          <text x="130" y="127" text-anchor="middle" font-family="Syne,sans-serif" font-size="11" font-weight="800" fill="white">DevOps</text>
+          <text x="130" y="141" text-anchor="middle" font-family="Space Mono" font-size="6" fill="rgba(0,212,255,.55)" letter-spacing="2">INFINITY LOOP</text>
+        </svg>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="div"></div>
+
+  <!-- MARQUEE -->
+  <div class="mqsec">
+    <div class="mqlbl">// Tech Stack</div>
+    <div class="mqout">
+      <div class="mqtrack">
+        <div class="tl"><svg viewBox="0 0 80 80"><text x="40" y="52" font-size="40" text-anchor="middle" fill="#FF9900">☁</text></svg><span>AWS</span></div>
+        <div class="tl"><svg viewBox="0 0 80 80"><rect x="8" y="28" width="11" height="9" rx="2" fill="#2496ED"/><rect x="22" y="28" width="11" height="9" rx="2" fill="#2496ED"/><rect x="36" y="28" width="11" height="9" rx="2" fill="#2496ED"/><rect x="22" y="16" width="11" height="9" rx="2" fill="#2496ED"/><rect x="36" y="16" width="11" height="9" rx="2" fill="#2496ED"/></svg><span>Docker</span></div>
+        <div class="tl"><svg viewBox="0 0 80 80"><polygon points="40,8 72,24 72,56 40,72 8,56 8,24" fill="none" stroke="#326CE5" stroke-width="3"/><circle cx="40" cy="40" r="9" fill="#326CE5"/><line x1="40" y1="8" x2="40" y2="31" stroke="#326CE5" stroke-width="2"/><line x1="40" y1="49" x2="40" y2="72" stroke="#326CE5" stroke-width="2"/><line x1="8" y1="24" x2="31" y2="36" stroke="#326CE5" stroke-width="2"/><line x1="49" y1="44" x2="72" y2="56" stroke="#326CE5" stroke-width="2"/><line x1="8" y1="56" x2="31" y2="44" stroke="#326CE5" stroke-width="2"/><line x1="49" y1="36" x2="72" y2="24" stroke="#326CE5" stroke-width="2"/></svg><span>K8s</span></div>
+        <div class="tl"><svg viewBox="0 0 80 80"><polygon points="40,6 16,20 16,46 40,60 40,34 64,20" fill="#7B42BC" opacity="0.9"/><polygon points="40,34 40,60 64,46 64,20" fill="#7B42BC" opacity="0.55"/><polygon points="16,54 40,68 40,60 16,46" fill="#7B42BC" opacity="0.7"/></svg><span>Terraform</span></div>
+        <div class="tl"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="28" fill="#1A1918"/><circle cx="40" cy="40" r="22" fill="none" stroke="#EE0000" stroke-width="3"/><text x="40" y="48" font-size="22" text-anchor="middle" fill="#EE0000" font-weight="bold">A</text></svg><span>Ansible</span></div>
+        <div class="tl"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="26" fill="none" stroke="#E6522C" stroke-width="3"/><circle cx="40" cy="40" r="7" fill="#E6522C"/><line x1="40" y1="10" x2="40" y2="33" stroke="#E6522C" stroke-width="2"/><line x1="40" y1="47" x2="40" y2="70" stroke="#E6522C" stroke-width="2"/><line x1="10" y1="40" x2="33" y2="40" stroke="#E6522C" stroke-width="2"/><line x1="47" y1="40" x2="70" y2="40" stroke="#E6522C" stroke-width="2"/></svg><span>Prometheus</span></div>
+        <div class="tl"><svg viewBox="0 0 80 80"><path d="M18 62 Q25 20 40 40 Q55 60 62 18" fill="none" stroke="#F46800" stroke-width="4" stroke-linecap="round"/><circle cx="40" cy="40" r="5" fill="#F46800"/></svg><span>Grafana</span></div>
+        <div class="tl"><svg viewBox="0 0 80 80"><rect x="16" y="16" width="48" height="48" rx="9" fill="#F05032"/><circle cx="28" cy="30" r="5" fill="white"/><circle cx="28" cy="52" r="5" fill="white"/><circle cx="52" cy="30" r="5" fill="white"/><line x1="28" y1="35" x2="28" y2="47" stroke="white" stroke-width="2.5"/><path d="M28 30 Q28 18 52 30" fill="none" stroke="white" stroke-width="2.5"/></svg><span>Git</span></div>
+        <div class="tl"><svg viewBox="0 0 80 80"><ellipse cx="40" cy="34" rx="17" ry="22" fill="#FFD700"/><circle cx="33" cy="29" r="3" fill="#333"/><circle cx="47" cy="29" r="3" fill="#333"/><path d="M33 42 Q40 47 47 42" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/></svg><span>Linux</span></div>
+        <div class="tl"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="26" fill="none" stroke="#EF7B4D" stroke-width="3"/><path d="M28 40 Q40 20 52 40 Q40 60 28 40Z" fill="#EF7B4D" opacity="0.8"/></svg><span>ArgoCD</span></div>
+        <div class="tl"><svg viewBox="0 0 80 80"><path d="M18 66 Q18 24 40 16" fill="none" stroke="#4E9BCD" stroke-width="5" stroke-linecap="round"/><path d="M30 66 Q30 36 52 24" fill="none" stroke="#4E9BCD" stroke-width="5" stroke-linecap="round" opacity="0.6"/></svg><span>SonarQube</span></div>
+        <!-- duplicate for loop -->
+        <div class="tl"><svg viewBox="0 0 80 80"><text x="40" y="52" font-size="40" text-anchor="middle" fill="#FF9900">☁</text></svg><span>AWS</span></div>
+        <div class="tl"><svg viewBox="0 0 80 80"><rect x="8" y="28" width="11" height="9" rx="2" fill="#2496ED"/><rect x="22" y="28" width="11" height="9" rx="2" fill="#2496ED"/><rect x="36" y="28" width="11" height="9" rx="2" fill="#2496ED"/><rect x="22" y="16" width="11" height="9" rx="2" fill="#2496ED"/><rect x="36" y="16" width="11" height="9" rx="2" fill="#2496ED"/></svg><span>Docker</span></div>
+        <div class="tl"><svg viewBox="0 0 80 80"><polygon points="40,8 72,24 72,56 40,72 8,56 8,24" fill="none" stroke="#326CE5" stroke-width="3"/><circle cx="40" cy="40" r="9" fill="#326CE5"/></svg><span>K8s</span></div>
+        <div class="tl"><svg viewBox="0 0 80 80"><polygon points="40,6 16,20 16,46 40,60 40,34 64,20" fill="#7B42BC" opacity="0.9"/><polygon points="40,34 40,60 64,46 64,20" fill="#7B42BC" opacity="0.55"/></svg><span>Terraform</span></div>
+        <div class="tl"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="26" fill="none" stroke="#E6522C" stroke-width="3"/><circle cx="40" cy="40" r="7" fill="#E6522C"/></svg><span>Prometheus</span></div>
+        <div class="tl"><svg viewBox="0 0 80 80"><path d="M18 62 Q25 20 40 40 Q55 60 62 18" fill="none" stroke="#F46800" stroke-width="4" stroke-linecap="round"/><circle cx="40" cy="40" r="5" fill="#F46800"/></svg><span>Grafana</span></div>
+        <div class="tl"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="26" fill="none" stroke="#EF7B4D" stroke-width="3"/><path d="M28 40 Q40 20 52 40 Q40 60 28 40Z" fill="#EF7B4D" opacity="0.8"/></svg><span>ArgoCD</span></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>© 2025 Muhammad Ali · DevOps Engineer</span>
+    <span style="color:#00d4ff">Lahore, Pakistan</span>
+  </footer>
+
+</div><!-- end page-home -->
+
+
+<!-- ═══════════════ PAGE: ABOUT ═══════════════ -->
+<div class="page" id="page-about">
+  <section class="sec" style="padding-top:100px">
+    <div class="snum">// 01</div>
+    <h2 class="stitle">About Me</h2>
+    <p class="aboutp">Motivated DevOps Engineer with hands-on experience in <b>AWS, Azure, Terraform, Jenkins, GitHub Actions, Docker, Kubernetes</b>, and CI/CD pipeline automation. Completed a <b>4-month professional DevOps training</b> and a <b>3-month internship</b> at Codetekloud, focused on cloud deployment, monitoring, and automation. Passionate about building <b>production-grade DevSecOps pipelines</b> that bake security in — not bolt it on.</p>
+    <div class="stats">
+      <div class="stat"><div class="statn" data-target="3">0</div><div class="statl">Months Internship</div></div>
+      <div class="stat"><div class="statn" data-target="4">0</div><div class="statl">Certifications</div></div>
+      <div class="stat"><div class="statn" data-target="12">0</div><div class="statl">Projects</div></div>
+      <div class="stat"><div class="statn" data-target="10">0</div><div class="statl">AWS Services</div></div>
+    </div>
+  </section>
+  <footer>
+    <span>© 2025 Muhammad Ali · DevOps Engineer</span>
+    <span style="color:#00d4ff">Lahore, Pakistan</span>
+  </footer>
+</div>
+
+
+<!-- ═══════════════ PAGE: SKILLS ═══════════════ -->
+<div class="page" id="page-skills">
+  <section class="sec" style="padding-top:100px">
+    <div class="snum">// 02</div>
+    <h2 class="stitle">Skills</h2>
+    <div class="pipeline">
+      <div class="pstep"><div class="pbox"><span class="pi">📝</span>CODE</div><span class="parr">→</span></div>
+      <div class="pstep"><div class="pbox"><span class="pi">🔧</span>BUILD</div><span class="parr">→</span></div>
+      <div class="pstep"><div class="pbox"><span class="pi">🧪</span>TEST</div><span class="parr">→</span></div>
+      <div class="pstep"><div class="pbox"><span class="pi">🛡️</span>SCAN</div><span class="parr">→</span></div>
+      <div class="pstep"><div class="pbox"><span class="pi">🐳</span>PACKAGE</div><span class="parr">→</span></div>
+      <div class="pstep"><div class="pbox"><span class="pi">☁️</span>DEPLOY</div><span class="parr">→</span></div>
+      <div class="pstep"><div class="pbox"><span class="pi">📊</span>MONITOR</div></div>
+    </div>
+    <div class="skgrid">
+      <div class="sk"><div class="skhd"><span class="skico">☁️</span><div class="sktitle">Cloud (AWS / Azure)</div></div><div class="sktags"><span class="sktag">EC2</span><span class="sktag">VPC</span><span class="sktag">S3</span><span class="sktag">ALB</span><span class="sktag">Lambda</span><span class="sktag">EKS</span><span class="sktag">ECS</span><span class="sktag">IAM</span><span class="sktag">AKS</span><span class="sktag">ACR</span></div></div>
+      <div class="sk"><div class="skhd"><span class="skico">🔄</span><div class="sktitle">CI/CD Pipeline</div></div><div class="sktags"><span class="sktag">Jenkins</span><span class="sktag">CodePipeline</span><span class="sktag">GitHub Actions</span></div></div>
+      <div class="sk"><div class="skhd"><span class="skico">🐳</span><div class="sktitle">Containers</div></div><div class="sktags"><span class="sktag">Docker</span><span class="sktag">Kubernetes</span><span class="sktag">EKS</span><span class="sktag">AKS</span><span class="sktag">ArgoCD</span><span class="sktag">Helm</span><span class="sktag">KIND</span></div></div>
+      <div class="sk"><div class="skhd"><span class="skico">🏗️</span><div class="sktitle">IaC & Config</div></div><div class="sktags"><span class="sktag">Terraform</span><span class="sktag">Ansible</span><span class="sktag">CloudFormation</span></div></div>
+      <div class="sk"><div class="skhd"><span class="skico">📊</span><div class="sktitle">Monitoring & Security</div></div><div class="sktags"><span class="sktag">Prometheus</span><span class="sktag">Grafana</span><span class="sktag">SonarCloud</span><span class="sktag">Trivy</span><span class="sktag">OWASP ZAP</span></div></div>
+      <div class="sk"><div class="skhd"><span class="skico">🐧</span><div class="sktitle">OS & Scripting</div></div><div class="sktags"><span class="sktag">Linux</span><span class="sktag">Bash</span><span class="sktag">Shell</span><span class="sktag">Git</span></div></div>
+    </div>
+  </section>
+  <footer>
+    <span>© 2025 Muhammad Ali · DevOps Engineer</span>
+    <span style="color:#00d4ff">Lahore, Pakistan</span>
+  </footer>
+</div>
+
+
+<!-- ═══════════════ PAGE: CERTS ═══════════════ -->
+<div class="page" id="page-certs">
+  <section class="sec" style="padding-top:100px">
+    <div class="snum">// 03</div>
+    <h2 class="stitle">Certifications</h2>
+    <div class="cgrid">
+
+      <div class="cc cc-glow">
+        <div class="cc-icon">🎓</div>
+        <div class="ccname">RHCSA</div>
+        <div class="ccorg">CYBERWING.PK</div>
+        <div class="ccdur">4 Months · Red Hat System Admin</div>
+      </div>
+
+      <div class="cc cc-glow">
+        <div class="cc-icon">🐧</div>
+        <div class="ccname">Linux Servers</div>
+        <div class="ccorg">CYBERWING.PK</div>
+        <div class="ccdur">3 Months · Server Administration</div>
+      </div>
+
+      <div class="cc cc-glow">
+        <div class="cc-icon">☁️</div>
+        <div class="ccname">Amazon Web Services</div>
+        <div class="ccorg">CYBERWING.PK</div>
+        <div class="ccdur">3 Months · Cloud Infrastructure</div>
+      </div>
+
+      <div class="cc cc-glow">
+        <div class="cc-icon">⚙️</div>
+        <div class="ccname">DevOps</div>
+        <div class="ccorg">CYBERWING.PK</div>
+        <div class="ccdur">3 Months · CI/CD & Automation</div>
+      </div>
+
+    </div>
+  </section>
+  <footer>
+    <span>© 2025 Muhammad Ali · DevOps Engineer</span>
+    <span style="color:#00d4ff">Lahore, Pakistan</span>
+  </footer>
+</div>
+
+
+<!-- ═══════════════ PAGE: EXP ═══════════════ -->
+<div class="page" id="page-exp">
+  <section class="sec" style="padding-top:100px">
+    <div class="snum">// 03</div>
+    <h2 class="stitle">Work Experience</h2>
+    <div class="expcard" style="border-color:rgba(0,212,255,.28)">
+      <div class="expbadge" style="background:#00d4ff;color:#060a12">CURRENT INTERNSHIP</div>
+      <div class="exprole">DevOps Intern</div>
+      <div class="expco">Davine Technologies · Remote</div>
+      <div class="expdt">July 2026 — Present · 3 months</div>
+      <ul class="exppts">
+        <li>Supporting DevOps projects across infrastructure and deployment tasks</li>
+        <li>Maintaining technical documentation for internal workflows</li>
+        <li>Collaborating with the team on execution of technical and operational activities</li>
+      </ul>
+    </div>
+    <div class="expcard">
+      <div class="expbadge">INTERNSHIP</div>
+      <div class="exprole">DevOps Intern</div>
+      <div class="expco">Codetekloud · Lahore</div>
+      <div class="expdt">August 2025 — October 2025 · 3 months</div>
+      <ul class="exppts">
+        <li>Automated deployment processes with CI/CD tools, improving efficiency and minimizing downtime</li>
+        <li>Supported containerization technologies to streamline application deployment and scaling</li>
+        <li>Collaborated with dev team to troubleshoot CI/CD pipelines, enhancing system reliability</li>
+        <li>Hands-on with Jenkins, Terraform, Ansible, Prometheus, Grafana, and SonarQube</li>
+        <li>Worked with AWS: EC2, VPC, S3, CloudFront, ALB, Lambda, EKS, ECS, CodePipeline, IAM</li>
+      </ul>
+    </div>
+  </section>
+  <footer>
+    <span>© 2025 Muhammad Ali · DevOps Engineer</span>
+    <span style="color:#00d4ff">Lahore, Pakistan</span>
+  </footer>
+</div>
+
+
+<!-- ═══════════════ PAGE: PROJECTS ═══════════════ -->
+<div class="page" id="page-projects">
+  <section class="sec" style="padding-top:100px">
+    <div class="snum">// 04</div>
+    <h2 class="stitle">Projects</h2>
+    <div class="pjgrid">
+
+      <!-- PROJECT 01 — ShopNow (NEW LATEST) -->
+      <div class="pj" style="border-color:rgba(0,212,255,.28)">
+        <div class="pjnum" style="color:#00d4ff">01 · LATEST</div>
+        <div class="pjtitle">ShopNow — End-to-End DevSecOps + GitOps Microservices Platform</div>
+        <div class="pjdesc">Production-inspired microservices e-commerce app (5 backend services + React frontend). Fully Dockerized, deployed on Kubernetes via Helm Charts with ArgoCD GitOps. GitHub Actions CI pipeline runs Trivy security scans (filesystem + image) before publishing to Docker Hub, then auto-updates image tags in the infra repo for ArgoCD to sync. PostgreSQL + Redis running in-cluster, monitored via Prometheus & Grafana behind NGINX Ingress.</div>
+        <div class="pjtech"><span class="tb">React.js</span><span class="tb">Node.js</span><span class="tb">Express.js</span><span class="tb">PostgreSQL</span><span class="tb">Redis</span><span class="tb">Docker</span><span class="tb">Kubernetes</span><span class="tb">Helm</span><span class="tb">ArgoCD</span><span class="tb">GitHub Actions</span><span class="tb">Trivy</span><span class="tb">Prometheus</span><span class="tb">Grafana</span><span class="tb">NGINX Ingress</span></div>
+        <a href="https://linkedin.com/in/muhammad-ali-425a83325" class="pjlink" target="_blank">LinkedIn ↗</a>
+      </div>
+
+      <!-- PROJECT 02 — ShopFlow -->
+      <div class="pj">
+        <div class="pjnum">02</div>
+        <div class="pjtitle">ShopFlow — Production-Grade DevSecOps Pipeline on Azure</div>
+        <div class="pjdesc">Full DevSecOps pipeline from code to cloud on Azure. AKS + ACR provisioned via Terraform with remote state in Azure Blob Storage. GitHub Actions CI with SonarCloud (SAST), Trivy (image scanning), and OWASP ZAP (DAST) security gates. ArgoCD GitOps two-repo pattern across 3 environments (dev → staging → prod). Prometheus + Grafana monitoring with Slack alerting via webhook.</div>
+        <div class="pjtech"><span class="tb">Azure AKS</span><span class="tb">Terraform</span><span class="tb">GitHub Actions</span><span class="tb">ArgoCD</span><span class="tb">Helm</span><span class="tb">SonarCloud</span><span class="tb">Trivy</span><span class="tb">OWASP ZAP</span><span class="tb">Prometheus</span><span class="tb">Grafana</span></div>
+        <a href="https://linkedin.com/in/muhammad-ali-425a83325" class="pjlink" target="_blank">LinkedIn ↗</a>
+      </div>
+
+      <!-- PROJECT 02 -->
+      <div class="pj">
+        <div class="pjnum">03</div>
+        <div class="pjtitle">DevSecOps — Attendance Portal on Kubernetes</div>
+        <div class="pjdesc">Full DevSecOps pipeline — GitHub Actions CI, ArgoCD GitOps on KIND cluster. SonarCloud, Trivy, OWASP ZAP security gates all passed before production deploy.</div>
+        <div class="pjtech"><span class="tb">GitHub Actions</span><span class="tb">ArgoCD</span><span class="tb">K8s</span><span class="tb">Docker</span><span class="tb">SonarCloud</span><span class="tb">Trivy</span><span class="tb">OWASP ZAP</span></div>
+        <a href="https://linkedin.com/in/muhammad-ali-425a83325" class="pjlink" target="_blank">LinkedIn ↗</a>
+      </div>
+
+      <!-- PROJECT 03 -->
+      <div class="pj">
+        <div class="pjnum">04</div>
+        <div class="pjtitle">GitOps Three-Tier App Deployment</div>
+        <div class="pjdesc">Full-stack todo app (React + Node.js + MongoDB) on KIND K8s cluster using ArgoCD & GitHub Actions with self-hosted runner.</div>
+        <div class="pjtech"><span class="tb">ArgoCD</span><span class="tb">K8s</span><span class="tb">GitHub Actions</span><span class="tb">Docker</span><span class="tb">KIND</span></div>
+        <a href="https://linkedin.com/in/muhammad-ali-425a83325" class="pjlink" target="_blank">LinkedIn ↗</a>
+      </div>
+
+      <!-- PROJECT 04 -->
+      <div class="pj">
+        <div class="pjnum">05</div>
+        <div class="pjtitle">DevSecOps Pipeline — Code to Kubernetes</div>
+        <div class="pjdesc">End-to-end pipeline with Trivy security scanning, Jenkins CI, Docker, and MicroK8s deployment.</div>
+        <div class="pjtech"><span class="tb">Jenkins</span><span class="tb">Trivy</span><span class="tb">Docker</span><span class="tb">MicroK8s</span></div>
+        <a href="https://linkedin.com/in/muhammad-ali-425a83325" class="pjlink" target="_blank">LinkedIn ↗</a>
+      </div>
+
+      <!-- PROJECT 05 -->
+      <div class="pj">
+        <div class="pjnum">06</div>
+        <div class="pjtitle">CI/CD Pipeline + Monitoring</div>
+        <div class="pjdesc">Jenkins pipeline with Dockerized microservices, Kubernetes, Prometheus + Grafana monitoring.</div>
+        <div class="pjtech"><span class="tb">Jenkins</span><span class="tb">Docker</span><span class="tb">K8s</span><span class="tb">Prometheus</span><span class="tb">Grafana</span></div>
+        <a href="https://github.com/pixelopscloud" class="pjlink" target="_blank">GitHub ↗</a>
+      </div>
+
+      <!-- PROJECT 06 -->
+      <div class="pj">
+        <div class="pjnum">07</div>
+        <div class="pjtitle">AWS Cloud Infrastructure + Auto-scaling</div>
+        <div class="pjdesc">Scalable AWS infra with ASG, ALB, and CloudFront for high availability.</div>
+        <div class="pjtech"><span class="tb">AWS</span><span class="tb">EC2</span><span class="tb">ALB</span><span class="tb">ASG</span></div>
+        <a href="https://github.com/pixelopscloud" class="pjlink" target="_blank">GitHub ↗</a>
+      </div>
+
+      <!-- PROJECT 07 -->
+      <div class="pj">
+        <div class="pjnum">08</div>
+        <div class="pjtitle">Terraform Infrastructure Automation</div>
+        <div class="pjdesc">Full IaC setup for provisioning AWS resources with reusable Terraform modules.</div>
+        <div class="pjtech"><span class="tb">Terraform</span><span class="tb">AWS</span><span class="tb">IaC</span></div>
+        <a href="https://github.com/pixelopscloud" class="pjlink" target="_blank">GitHub ↗</a>
+      </div>
+
+      <!-- PROJECT 08 -->
+      <div class="pj">
+        <div class="pjnum">09</div>
+        <div class="pjtitle">Kubernetes Container Orchestration</div>
+        <div class="pjdesc">Production-grade K8s cluster with deployments, services, and ingress config.</div>
+        <div class="pjtech"><span class="tb">K8s</span><span class="tb">EKS</span><span class="tb">Docker</span></div>
+        <a href="https://github.com/pixelopscloud" class="pjlink" target="_blank">GitHub ↗</a>
+      </div>
+
+      <!-- PROJECT 09 -->
+      <div class="pj">
+        <div class="pjnum">10</div>
+        <div class="pjtitle">AWS CodePipeline CI/CD</div>
+        <div class="pjdesc">Serverless CI/CD with CodeCommit, CodeBuild, and CodeDeploy on AWS.</div>
+        <div class="pjtech"><span class="tb">CodePipeline</span><span class="tb">CodeBuild</span><span class="tb">S3</span></div>
+        <a href="https://github.com/pixelopscloud" class="pjlink" target="_blank">GitHub ↗</a>
+      </div>
+
+      <!-- PROJECT 10 -->
+      <div class="pj">
+        <div class="pjnum">11</div>
+        <div class="pjtitle">Prometheus & Grafana Monitoring Stack</div>
+        <div class="pjdesc">Full observability with metrics collection, alerting, and dashboards.</div>
+        <div class="pjtech"><span class="tb">Prometheus</span><span class="tb">Grafana</span><span class="tb">Docker</span></div>
+        <a href="https://github.com/pixelopscloud" class="pjlink" target="_blank">GitHub ↗</a>
+      </div>
+
+      <!-- MORE -->
+      <div class="pj" style="border-color:rgba(0,212,255,.15)">
+        <div class="pjnum">11+</div>
+        <div class="pjtitle">More Projects on GitHub</div>
+        <div class="pjdesc">15+ DevOps projects: VPC design, Ansible playbooks, ECS deployments & more.</div>
+        <div class="pjtech"><span class="tb">AWS</span><span class="tb">DevOps</span><span class="tb">Cloud</span></div>
+        <a href="https://github.com/pixelopscloud" class="pjlink" target="_blank">View All ↗</a>
+      </div>
+
+    </div>
+  </section>
+  <footer>
+    <span>© 2025 Muhammad Ali · DevOps Engineer</span>
+    <span style="color:#00d4ff">Lahore, Pakistan</span>
+  </footer>
+</div>
+
+
+<!-- ═══════════════ PAGE: CONTACT ═══════════════ -->
+<div class="page" id="page-contact">
+  <section class="sec" style="padding-top:100px">
+    <div class="snum">// 05</div>
+    <h2 class="stitle">Get In Touch</h2>
+    <div class="cngrid">
+      <a href="mailto:muhammadali726200@gmail.com" class="cni"><div class="cnico">✉️</div><div class="cnlbl">Email</div><div class="cnval">muhammadali726200@gmail.com</div></a>
+      <a href="tel:+923249426985" class="cni"><div class="cnico">📞</div><div class="cnlbl">Phone</div><div class="cnval">+92 324 942 6985</div></a>
+      <a href="https://linkedin.com/in/muhammad-ali-425a83325" target="_blank" class="cni"><div class="cnico">💼</div><div class="cnlbl">LinkedIn</div><div class="cnval">muhammad-ali-425a83325</div></a>
+      <a href="https://github.com/pixelopscloud" target="_blank" class="cni"><div class="cnico">🐙</div><div class="cnlbl">GitHub</div><div class="cnval">github.com/pixelopscloud</div></a>
+      <a href="https://hub.docker.com/r/pixelopscloud" target="_blank" class="cni"><div class="cnico">🐳</div><div class="cnlbl">DockerHub</div><div class="cnval">pixelopscloud</div></a>
+      <div class="cni"><div class="cnico">📍</div><div class="cnlbl">Location</div><div class="cnval">Lahore, Punjab · Pakistan</div></div>
+    </div>
+  </section>
+  <footer>
+    <span>© 2025 Muhammad Ali · DevOps Engineer</span>
+    <span style="color:#00d4ff">Lahore, Pakistan</span>
+  </footer>
+</div>
+
+
+<script>
+// 1. PARTICLES
+(function(){
+  var c=document.getElementById('pts');
+  for(var i=0;i<18;i++){
+    var p=document.createElement('div');
+    p.className='pt';
+    var s=Math.random()*2+1;
+    p.style.left=Math.random()*100+'%';
+    p.style.width=s+'px';
+    p.style.height=s+'px';
+    p.style.animationDuration=(Math.random()*12+10)+'s';
+    p.style.animationDelay=(Math.random()*10)+'s';
+    c.appendChild(p);
+  }
+})();
+
+// 2. TYPING
+(function(){
+  var words=['Automating CI/CD pipelines...','Deploying on Kubernetes...','Managing Azure Infrastructure...','Provisioning with Terraform...','Monitoring with Prometheus...','GitOps with ArgoCD...','Securing with Trivy & OWASP ZAP...'];
+  var wi=0,ci=0,del=false;
+  var el=document.getElementById('typed');
+  if(!el)return;
+  function run(){
+    var w=words[wi];
+    if(!del){
+      ci++;
+      el.textContent=w.slice(0,ci);
+      if(ci===w.length){del=true;return setTimeout(run,1800);}
+    }else{
+      ci--;
+      el.textContent=w.slice(0,ci);
+      if(ci===0){del=false;wi=(wi+1)%words.length;}
+    }
+    setTimeout(run,del?36:65);
+  }
+  setTimeout(run,600);
+})();
+
+// 3. COUNTER
+(function(){
+  var started={};
+  function animate(el){
+    var tgt=parseInt(el.getAttribute('data-target'));
+    var cur=0,step=tgt/35;
+    var t=setInterval(function(){
+      cur+=step;
+      if(cur>=tgt){el.textContent=tgt+'+';clearInterval(t);}
+      else el.textContent=Math.floor(cur);
+    },45);
+  }
+  function check(){
+    document.querySelectorAll('.statn[data-target]').forEach(function(el){
+      var key=el.getAttribute('data-target');
+      if(started[key])return;
+      var r=el.getBoundingClientRect();
+      if(r.top<window.innerHeight-80){
+        started[key]=true;
+        animate(el);
+      }
+    });
+  }
+  window.addEventListener('scroll',check,{passive:true});
+  setTimeout(check,800);
+})();
+
+// 4. PIPELINE HIGHLIGHT
+(function(){
+  var boxes=document.querySelectorAll('.pbox');
+  var i=0;
+  setInterval(function(){
+    boxes.forEach(function(b){b.style.borderColor='';b.style.color='';});
+    if(boxes[i]){
+      boxes[i].style.borderColor='rgba(0,212,255,.5)';
+      boxes[i].style.color='#00d4ff';
+    }
+    i=(i+1)%boxes.length;
+  },900);
+})();
+
+// HAMBURGER MENU
+function toggleMenu(){
+  var btn = document.getElementById('hamburger');
+  var drop = document.getElementById('navdrop');
+  btn.classList.toggle('open');
+  drop.classList.toggle('open');
+}
+function closeMenu(){
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('navdrop').classList.remove('open');
+}
+
+// Close menu when clicking outside
+document.addEventListener('click', function(e){
+  var btn = document.getElementById('hamburger');
+  var drop = document.getElementById('navdrop');
+  if(!btn.contains(e.target) && !drop.contains(e.target)){
+    closeMenu();
+  }
+});
+
+// 5. PAGE NAVIGATION with fade
+var currentPage = 'home';
+
+window.showPage = function(name) {
+  if(name === currentPage) return;
+
+  var oldPage = document.getElementById('page-' + currentPage);
+  var newPage = document.getElementById('page-' + name);
+  if(!newPage) return;
+
+  document.querySelectorAll('.navdrop a').forEach(function(a){
+    a.classList.remove('active');
+  });
+  var navLink = document.getElementById('nav-' + name);
+  if(navLink) navLink.classList.add('active');
+
+  oldPage.style.opacity = '0';
+  oldPage.style.transition = 'opacity 0.3s ease';
+
+  setTimeout(function(){
+    oldPage.style.display = 'none';
+    oldPage.style.opacity = '';
+    oldPage.style.transition = '';
+
+    newPage.style.display = 'block';
+    newPage.style.opacity = '0';
+    currentPage = name;
+
+    window.scrollTo(0,0);
+
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        newPage.style.transition = 'opacity 0.45s ease';
+        newPage.style.opacity = '1';
+
+        if(name === 'about') {
+          setTimeout(function(){
+            document.querySelectorAll('.statn[data-target]').forEach(function(el){
+              var tgt=parseInt(el.getAttribute('data-target'));
+              var cur=0,step=tgt/35;
+              var t=setInterval(function(){
+                cur+=step;
+                if(cur>=tgt){el.textContent=tgt+'+';clearInterval(t);}
+                else el.textContent=Math.floor(cur);
+              },45);
+            });
+          }, 200);
+        }
+      });
+    });
+  }, 320);
+}
+
+// Logo click goes home
+document.querySelector('.logo').addEventListener('click', function(){
+  window.showPage('home');
+});
+
+// Show home on load with fade in
+(function(){
+  var home = document.getElementById('page-home');
+  home.style.display = 'block';
+  home.style.opacity = '0';
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      home.style.transition = 'opacity 0.6s ease';
+      home.style.opacity = '1';
+    });
+  });
+})();
+</script>
+</body>
+</html>
